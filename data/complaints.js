@@ -65,7 +65,7 @@ const map311RecordToComplaint = (record) => {
   const borough = normalizeBorough(record.borough);
   if (!borough) return null;
 
-  const complaintType = (record.descriptor || record.complaint_type || '').trim();
+  const complaintType = (record.complaint_type || '').trim();
   if (!complaintType) return null;
 
   const zipCode = cleanZip(record.incident_zip);
@@ -83,7 +83,7 @@ const map311RecordToComplaint = (record) => {
     timeOfDay: bucketTimeOfDay(created),
     dayOfWeek: deriveDayOfWeek(created),
     intensity: null,
-    description: (record.descriptor || '').trim(),
+    description: (record.descriptor || record.resolution_description || '').trim() || null,
     status: record.status || 'Open',
     source: '311',
     sourceId: sourceId.toString(),
