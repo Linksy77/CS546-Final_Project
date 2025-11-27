@@ -1,1 +1,45 @@
-<!-- Our landing/home page -->
+{{#if message}}
+  <div class="notice">{{message}}</div>
+{{/if}}
+
+{{#if complaints.length}}
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Borough</th>
+          <th>Zip</th>
+          <th>Date</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each complaints}}
+          <tr>
+            <td>{{complaintType}}</td>
+            <td>{{borough}}</td>
+            <td>{{zipCode}}</td>
+            <td>{{dateSubmitted}}</td>
+            <td>{{description}}</td>
+          </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
+  <div class="pager">
+    {{#if hasPrev}}
+      <a class="pager-link" href="/?page={{decrement page}}&limit={{queryLimit}}">← Previous</a>
+    {{else}}
+      <span class="pager-disabled">← Previous</span>
+    {{/if}}
+    <span class="pager-info">Page {{page}} {{#if totalPages}}of {{totalPages}}{{/if}}</span>
+    {{#if hasNext}}
+      <a class="pager-link" href="/?page={{increment page}}&limit={{queryLimit}}">Next →</a>
+    {{else}}
+      <span class="pager-disabled">Next →</span>
+    {{/if}}
+  </div>
+{{else}}
+  <p>No complaints to display yet.</p>
+{{/if}}

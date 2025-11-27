@@ -1,1 +1,25 @@
-<!-- Default layout for all of our pages/handlebars files rendered -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>{{title}}</title>
+  <link rel="stylesheet" href="/public/css/styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <h1>Noise Complaint Detective</h1>
+      <p class="tagline">NYC 311 Noise Complaints — Live Snapshot</p>
+    </div>
+  </header>
+
+  <main class="container">
+    {{{body}}}
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <small>Data sourced from NYC Open Data (311).</small>
+    </div>
+  </footer>
+</body>
+</html>
