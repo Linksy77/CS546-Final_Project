@@ -416,3 +416,44 @@ export const isValidStatus = (status) => {
   return status;
 
 };
+
+/**
+ * Gets a random element from an array
+ */
+export function getRandomElement(arr) {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
+/**
+ * Formats a complaint type for display
+ */
+export function formatComplaintType(type) {
+  if (!type) return 'Unknown';
+  return type
+    .replace('Noise - ', '')
+    .replace('Noise', 'General Noise')
+    .toLowerCase()
+    .replace(/\b\w/g, c => c.toUpperCase());
+}
+
+/**
+ * Generates a comparison summary between two neighborhoods
+ */
+export function generateComparisonSummary(profile1, profile2) {
+  const parts = [];
+  
+  const scoreDiff = profile1.quietScore - profile2.quietScore;
+  if (Math.abs(scoreDiff) < 0.5) {
+    parts.push(`${profile1.name} and ${profile2.name} have similar noise levels`);
+  } else if (scoreDiff > 0) {
+    parts.push(`${profile1.name} is quieter than ${profile2.name}`);
+  } else {
+    parts.push(`${profile2.name} is quieter than ${profile1.name}`);
+  }
+
+  if (profile1.peakNoiseTime !== profile2.peakNoiseTime) {
+    parts.push(`${profile1.name} is noisiest at ${profile1.peakNoiseTime.toLowerCase()}, while ${profile2.name} peaks during ${profile2.peakNoiseTime.toLowerCase()}`);
+  }
+
+  return parts.join('. ') + '.';
+}

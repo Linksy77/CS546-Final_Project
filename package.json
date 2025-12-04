@@ -8,7 +8,8 @@
     "start": "node app.js",
     "neighborhood-seed": "node tasks/neighborhood-seed.js",
     "import-311-complaints": "node tasks/complaint-import.js",
-    "users-seed": "node tasks/users-seed.js"
+    "users-seed": "node tasks/users-seed.js",
+    "recalculate-stats": "node tasks/recalculate-stats.js" 
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",
