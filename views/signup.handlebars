@@ -1,0 +1,106 @@
+{{#if error}}
+<p id="error" class="error">{{error}}</p>
+{{/if}}
+
+<form action="/signup" method="POST" name="signup-form" id="signup-form">
+    <div class="form-field">
+        <label for="username">Username:</label>
+        <input type="text" name="username" id="username" placeholder="Username">
+    </div>
+    <div class="form-field">
+        <label for="email">Email:</label>
+        <input type="text" name="email" id="email" placeholder="Email">
+    </div>
+    <div class="form-field">
+        <label for="password">Password:</label>
+        <input type="password" name="password" id="password" placeholder="Password">
+    </div>
+    <div class="form-field">
+        <label for="confirmPassword">Confirm Password:</label>
+        <input type="password" name="confirmPassword" id="confirmPassword" placeholder="Confirm Password">
+    </div>
+    <div class="form-field">
+        <label for="firstName">First Name:</label>
+        <input type="text" name="firstName" id="firstName" placeholder="First Name">
+    </div>
+    <div class="form-field">
+        <label for="lastName">Last Name:</label>
+        <input type="text" name="lastName" id="lastName" placeholder="Last Name">
+    </div>
+    <div class="form-field">
+        <label for="city">City:</label>
+        <input type="text" name="city" id="city" placeholder="City">
+    </div>
+    <div class="form-field">
+        <label for="state">State:</label>
+        <input list="states" name="state" id="state" placeholder="State Abbreviation">
+        <datalist id="states">
+            <option value="AL"></option>
+            <option value="AK"></option>
+            <option value="AZ"></option>
+            <option value="AR"></option>
+            <option value="CA"></option>
+            <option value="CO"></option>
+            <option value="CT"></option>
+            <option value="DE"></option>
+            <option value="FL"></option>
+            <option value="GA"></option>
+            <option value="HI"></option>
+            <option value="ID"></option>
+            <option value="IL"></option>
+            <option value="IN"></option>
+            <option value="IA"></option>
+            <option value="KS"></option>
+            <option value="KY"></option>
+            <option value="LA"></option>
+            <option value="ME"></option>
+            <option value="MD"></option>
+            <option value="MA"></option>
+            <option value="MI"></option>
+            <option value="MN"></option>
+            <option value="MS"></option>
+            <option value="MO"></option>
+            <option value="MT"></option>
+            <option value="NE"></option>
+            <option value="NV"></option>
+            <option value="NH"></option>
+            <option value="NJ"></option>
+            <option value="NM"></option>
+            <option value="NY"></option>
+            <option value="NC"></option>
+            <option value="ND"></option>
+            <option value="OH"></option>
+            <option value="OK"></option>
+            <option value="OR"></option>
+            <option value="PA"></option>
+            <option value="RI"></option>
+            <option value="SC"></option>
+            <option value="SD"></option>
+            <option value="TN"></option>
+            <option value="TX"></option>
+            <option value="UT"></option>
+            <option value="VT"></option>
+            <option value="VA"></option>
+            <option value="WA"></option>
+            <option value="WV"></option>
+            <option value="WI"></option>
+            <option value="WY"></option>
+        </datalist>
+    </div>
+    <div class="form-field">
+        <label for="zipCode">Zip Code:</label>
+        <input type="text" name="zipCode" id="zipCode" placeholder="Zip Code">
+    </div>
+    <div class="form-field">
+        <label for="role">Role:</label>
+        <select name="role" id="role">
+            <option value="user">User</option>
+            <option value="moderator">Moderator</option>
+            <option value="admin">Admin</option>
+        </select>
+    </div>
+
+    <button name="submitButton" id="submitButton">Submit</button>
+</form>
+
+<a id="login" class="pager-link" href="/login">Already have an account? Click here to sign-in</a>

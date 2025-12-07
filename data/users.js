@@ -135,10 +135,10 @@ export const createAccount = async (
     }
 
     // Ensuring firstName is "valid"
-    firstName = isValidName(firstName);
+    firstName = isValidName(firstName, "First name");
 
     // Ensuring lastName is "valid"
-    lastName = isValidName(lastName);
+    lastName = isValidName(lastName, "Last name");
 
     // Ensuring city is valid
     city = isValidCity(city);
@@ -165,7 +165,7 @@ export const createAccount = async (
         role : role,
         createdAt : fxnCallDate,
         updatedAt : fxnCallDate,
-        lastLogin : fxnCallDate,
+        // lastLogin : fxnCallDate, // to be added when user logs in
         submittedComplaints : [],
         cosignedComplaints : [],
         commentedComplaints : []
@@ -179,6 +179,8 @@ export const createAccount = async (
     }
 
     const user = await getUserById(insertInfo.insertedId.toString());
+
+    // console.log(user);
     return user;
 
 };
@@ -203,11 +205,12 @@ export const logIn = async (username, password) => {
     let passwordIsCorrect = await bcrypt.compare(password, expectedHashedPwd);
 
     if(!passwordIsCorrect) {
-        throw new Error("Password is incorrect!");
+        // console.log("ERROR: Password is incorrect");
+        throw new Error("Username or password is incorrect!");
     }
 
     const updatedInfo = await usersCollection.findOneAndUpdate(
-        {username: username},
+        {username: new RegExp(`^${username}$`, "i")},
         {$set: {lastLogin : fxnCallDate}},
         {returnDocument: "after"}
     );
@@ -217,6 +220,8 @@ export const logIn = async (username, password) => {
     }
 
     updatedInfo._id = updatedInfo._id.toString();
+
+    // console.log(updatedInfo);
     return updatedInfo;
     
 };
@@ -354,7 +359,7 @@ export const submitNoiseComplaint = async (
 
 /**
  * User of ID userId comments on noise complaint of ID noiseComplaintId
- * @param {string} userId 
+ * @param {string} userId
  * @param {string} noiseComplaintId 
  * @param {string} commentText 
  * @returns {Object}
@@ -541,11 +546,12 @@ export const getUserByUsername = async (username) => {
 
     const usersCollection = await users();
     const user = await usersCollection.findOne({
-        username: username
+        username: new RegExp(`^${username}$`, "i")
     });
 
     if (!user) {
-        throw new Error("No user of that username exists!");
+        // console.log("ERROR: User of that username not found");
+        throw new Error("Username or password is incorrect!");
     }
 
     user._id = user._id.toString();

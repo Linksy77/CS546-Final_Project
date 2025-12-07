@@ -12,6 +12,23 @@
     </div>
   </header>
 
+  <nav class="site-nav-bar">
+    <div class="nav-container">
+      <ul>
+        <a id="homelink" class="nav-link" href="/">Home</a>
+        {{#if user}}
+          <a id="userlink" class="nav-link" href="/userProfile">Your Profile</a>
+          <a id="signout" class="nav-link" href="/signout">Sign Out</a>
+        {{else}}
+          <a id="signuplink" class="nav-link" href="/signup">Sign Up</a>
+          <a id="loginlink" class="nav-link" href="/login">Log In</a>
+        {{/if}}
+      </ul>
+    </div>
+  </nav>
+
+  <h2>{{title}}</h2>
+
   <main class="container">
     {{{body}}}
   </main>

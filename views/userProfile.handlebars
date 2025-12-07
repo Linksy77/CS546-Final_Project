@@ -1,0 +1,39 @@
+<h3>Hello, {{firstName}} {{lastName}} ({{username}})!</h3>
+
+<p>It is currently {{currentTime}} on {{currentDate}}.</p>
+
+<p>Your account was created on {{createdAt}}, and it was last updated on {{updatedAt}}.</p>
+
+<p>You last logged in on {{lastLogin}}.</p>
+
+{{#if emailVerified}}
+    <p>Your email is verified!</p>
+{{else}}
+    <p>Your email is currently not verified.</p>
+{{/if}}
+
+<p>The location associated with your account is: {{city}}, {{state}} {{zipCode}}.</p>
+
+
+{{#if submittedComplaints.length}}
+    {{!-- <h3>Here are all of your submitted complaints:</h3> --}}
+    <p>You have submitted {{submittedComplaints.length}} complaints!</p>
+{{else}}
+    <p>You currently have no submitted complaints!</p>
+{{/if}}
+
+
+{{#if cosignedComplaints.length}}
+    {{!-- <h3>Here are all of your cosigned complaints:</h3> --}}
+    <p>You have cosigned {{cosignedComplaints.length}} complaints!</p>
+{{else}}
+    <p>You currently have no cosigned complaints!</p>
+{{/if}}
+
+
+{{#if commentedComplaints.length}}
+    {{!-- <h3>Here are all of your commented complaints:</h3> --}}
+    <p>You have left {{commentedComplaints.length}} comments on complaints!</p>
+{{else}}
+    <p>You currently have no commented complaints!</p>
+{{/if}}

@@ -89,3 +89,92 @@ tr:last-child td {
 .pager-info {
   color: #374151;
 }
+
+.site-nav-bar {
+  background: #2c3a57;
+  color: #f9fafb;
+  height: auto;
+}
+
+.nav-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0.8rem;
+}
+
+.nav-link {
+  text-decoration: none;
+  font-size: 16px;
+  color: #d1d5db;
+  padding-right: 40px;
+}
+
+.nav-link:hover {
+  text-decoration: underline;
+}
+
+.nav-link:visited {
+  color: #8fc5ff;
+}
+
+.nav-link:visited:hover {
+  color: #5398ff;
+}
+
+nav ul {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+h2 {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding-top: 1.5rem;
+}
+
+form {
+  padding-bottom: 1.5rem;
+}
+
+.form-field {
+  display: block;
+  padding-bottom: 1rem;
+}
+
+input, select, button{
+  margin-bottom: 10px;
+}
+
+input, select{
+  border: 1.5px solid rgb(37, 40, 65);
+  border-radius: 4px;
+  padding: 2px;
+}
+
+input:focus{
+  outline: 1px solid rgb(37, 40, 65);
+}
+
+button{
+  background-color: rgb(226, 226, 226);
+  border: 1.5px solid rgb(37, 40, 65);
+  border-radius: 2px;
+  padding: 2px 4px;
+}
+
+button:hover{
+  background-color: rgb(201, 201, 201);
+}
+
+button:active{
+  background-color: rgb(173, 173, 173);
+}
+
+.error {
+  font-size: 16px;
+  color: rgb(255, 55, 55);
+  font-weight: bold;
+  padding-bottom: 20px;
+}

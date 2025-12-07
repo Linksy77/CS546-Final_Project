@@ -1,0 +1,17 @@
+{{#if error}}
+<p id="error" class="error">{{error}}</p>
+{{/if}}
+
+<form action="/login" method="POST" id="login-form">
+    <div class="form-field">
+        <label for="username">Username:</label>
+        <input type="text" name="username" id="username" placeholder="Username">
+    </div>
+    <div class="form-field">
+        <label for="password">Password:</label>
+        <input type="password" name="password" id="password" placeholder="Password">
+    </div>
+    <button name="submit_button" id="submit_button">Submit</button>
+</form>
+
+<a id="signup" class="pager-link" href="/signup">Don't have an account? Click here to sign up!</a>

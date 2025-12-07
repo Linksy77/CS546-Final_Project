@@ -9,12 +9,13 @@
     "neighborhood-seed": "node tasks/neighborhood-seed.js",
     "import-311-complaints": "node tasks/complaint-import.js",
     "users-seed": "node tasks/users-seed.js",
-    "recalculate-stats": "node tasks/recalculate-stats.js" 
+    "recalculate-stats": "node tasks/recalculate-stats.js"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",
     "express": "^4.21.2",
     "express-handlebars": "^7.1.2",
+    "express-session": "^1.18.2",
     "mongodb": "^6.21.0",
     "zod": "^4.1.13"
   }

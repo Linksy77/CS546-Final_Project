@@ -142,10 +142,13 @@ export const isValidUsername = (username, allUsersList = undefined) => {
   // Checking if username is a valid string; if not, throwing an error (in isValidString)
   username = isValidString(username, "Username");
 
+  // console.log(typeof allUsersList);
+  // console.log(allUsersList);
+
   if(allUsersList !== undefined) {
-    // Checking if username is unique; if not, throwing an error:
+    // Checking if username is unique (case-insensitive); if not, throwing an error:
     for (let user of allUsersList) {
-      if(user.username == username) {
+      if((user.username).toLowerCase() == username.toLowerCase()) {
         throw new Error("Username is already taken!");
       }
     }
@@ -177,7 +180,7 @@ export const isValidEmail = (email, allUsersList) => {
   try {
     emailSchema.parse(email);
   } catch (e) {
-    throw new Error("email_address must be a valid email address in a valid email address format");
+    throw new Error("Email address must be a valid email address in a valid email address format");
   }
 
   return email;
@@ -211,19 +214,14 @@ export const isValidPassword = (password) => {
 
 };
 
-export const isValidName = (name) => {
+export const isValidName = (name, firstOrLastName) => {
   // Checking if name is a valid string; if not, throwing an error (in isValidString)
-  name = isValidString(name, "Name");
+  name = isValidString(name, firstOrLastName);
 
   // Checking if name is composed of only "valid" characters
-  // (in this case: lowercase latin letters + uppercase latin letters + hyphens)
-  for (let currChar of name) {
-    let currCharValue = currChar.charCodeAt(0);
-    if((currCharValue < 65 && currCharValue != 45) || (currCharValue > 90 && currCharValue < 97)
-        || (currCharValue > 122 && currCharValue < 192) || (currCharValue == 215) || (currCharValue == 247)
-        || (currCharValue == 329) || (currCharValue > 383)) {
-      throw new Error("Name must only contain hyphens, latin letters, and European latin letters!");
-    }
+  // (in this case: lowercase + uppercase latin letters + hyphens)
+  if(!(/^[a-zA-Z]+$/.test(name))) {
+      throw new Error(`${firstOrLastName} must only contain latin letters!`);
   }
 
   return name;
