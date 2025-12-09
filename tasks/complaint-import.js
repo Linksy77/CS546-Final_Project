@@ -2,16 +2,23 @@ import { dbConnection, closeConnection } from '../config/mongoConnection.js';
 import { import311Complaints, ensureNoiseComplaintIndexes } from '../data/complaints.js';
 
 const BASE_URL = 'https://data.cityofnewyork.us/resource/p5f6-bkga.json';
-const PAGE_SIZE = parseInt(process.env.NYC_OPEN_DATA_LIMIT || '1000', 10);
-const MAX_PAGES = parseInt(process.env.NYC_OPEN_DATA_PAGES || '1', 10); // safety cap
-const NOISE_FILTER = process.env.NYC_OPEN_DATA_WHERE || "complaint_type like 'Noise%'";
+const PAGE_SIZE = parseInt(process.env.NYC_OPEN_DATA_LIMIT || '50000', 10);
+const MAX_PAGES = parseInt(process.env.NYC_OPEN_DATA_PAGES || '0', 10); // 0 means no cap
+
+const YEAR = process.env.NYC_OPEN_DATA_YEAR || '2025';
+const START_DATE = process.env.NYC_OPEN_DATA_START || `${YEAR}-01-01T00:00:00`;
+const END_DATE = process.env.NYC_OPEN_DATA_END || `${YEAR}-12-31T23:59:59`;
+
+const buildWhere = () => {
+  return [`created_date between '${START_DATE}' and '${END_DATE}'`].join(' AND ');
+};
 
 const buildUrl = (offset) => {
   const params = new URLSearchParams({
     $limit: PAGE_SIZE.toString(),
     $offset: offset.toString(),
     $order: 'created_date DESC',
-    $where: NOISE_FILTER
+    $where: buildWhere()
   });
 
   if (process.env.NYC_OPEN_DATA_APP_TOKEN) {
@@ -39,7 +46,7 @@ const main = async () => {
   let page = 0;
   const totals = { processed: 0, inserted: 0, skipped: 0 };
 
-  while (page < MAX_PAGES) {
+  while (true) {
     page++;
     console.log(`Fetching page ${page} (offset ${offset})...`);
 
@@ -56,8 +63,12 @@ const main = async () => {
 
     console.log(`Page ${page}: processed ${summary.processed}, inserted ${summary.inserted}, skipped ${summary.skipped}`);
 
-    if (records.length < PAGE_SIZE) break;
-    offset += PAGE_SIZE;
+    if (MAX_PAGES > 0 && page >= MAX_PAGES) {
+      console.log(`Reached MAX_PAGES (${MAX_PAGES}); stopping early.`);
+      break;
+    }
+
+    offset += records.length;
   }
 
   console.log('Import complete.');
