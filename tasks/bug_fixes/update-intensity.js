@@ -137,7 +137,6 @@ const main = async () => {
   
   console.log('\n Migration complete!\n');
   
-  // Get statistics AFTER migration
   const totalAfter = await complaintsCollection.countDocuments({});
   const withIntensityAfter = await complaintsCollection.countDocuments({
     intensity: { $exists: true, $ne: null }
@@ -161,7 +160,7 @@ const main = async () => {
   for (const intensity of sortedIntensities) {
     const count = intensityDistribution[intensity];
     const percentage = Math.round((count / updated) * 100);
-    const bar = '█'.repeat(Math.floor(percentage / 2));
+    const bar = 'X'.repeat(Math.floor(percentage / 2));
     console.log(`  ${intensity}/10: ${count.toLocaleString().padStart(8)} (${percentage.toString().padStart(3)}%) ${bar}`);
   }
   
