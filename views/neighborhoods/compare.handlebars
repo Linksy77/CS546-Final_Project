@@ -1,0 +1,185 @@
+{{#if hasComparison}}
+  <div class="comparison-results">
+      <div class="breadcrumb">
+        <a href="/neighborhoods" class="breadcrumb-link">← All Neighborhoods</a>
+        <a href="/neighborhoods/compare" class="breadcrumb-link">Choose Different Neighborhoods</a>
+      </div>
+    <div class="comparison-header">
+      <h2 class="comparison-title">Neighborhood Comparison</h2>
+      <p class="comparison-summary">{{comparisonData.summary}}</p>
+    </div>
+
+    <div class="comparison-grid">
+      <div class="comparison-card">
+        <div class="comparison-card-header">
+          <h3>{{neighborhood1.name}}</h3>
+          <p class="comparison-borough">{{neighborhood1.borough}}</p>
+        </div>
+        
+        <div class="quiet-score-comparison">
+          <div class="score-circle-small" style="border-color: {{neighborhood1.quietScoreColor}};">
+            <span class="score-value">{{neighborhood1.quietScore}}</span>
+          </div>
+          <p class="score-label">{{neighborhood1.quietScoreDescription}}</p>
+        </div>
+
+        <div class="comparison-stats">
+          <div class="comparison-stat">
+            <span class="stat-label">Total Complaints</span>
+            <span class="stat-value">{{neighborhood1.totalComplaints}}</span>
+          </div>
+          <div class="comparison-stat">
+            <span class="stat-label">Avg Intensity</span>
+            <span class="stat-value">{{neighborhood1.avgIntensity}}/10</span>
+          </div>
+          <div class="comparison-stat">
+            <span class="stat-label">Peak Time</span>
+            <span class="stat-value">{{neighborhood1.peakNoiseTime}}</span>
+          </div>
+          <div class="comparison-stat">
+            <span class="stat-label">Peak Day</span>
+            <span class="stat-value">{{neighborhood1.peakNoiseDay}}</span>
+          </div>
+        </div>
+
+        <div class="comparison-personality">
+          <h4>Noise Personality</h4>
+          <p>{{neighborhood1.noisePersonality}}</p>
+        </div>
+
+        <div class="comparison-top-complaints">
+          <h4>Top Complaint Types</h4>
+          <ul class="complaint-list">
+            {{#each neighborhood1.topComplaintTypes}}
+              <li>
+                <span class="complaint-name">{{type}}</span>
+                <span class="complaint-percentage">{{percentage}}%</span>
+              </li>
+            {{/each}}
+          </ul>
+        </div>
+
+        <a href="/neighborhoods/{{neighborhood1._id}}" class="detail-link">
+          View Full Profile →
+        </a>
+      </div>
+
+      <div class="comparison-divider">
+        <div class="vs-badge">VS</div>
+        <div class="winner-indicator">
+          {{#if comparisonData.quieterNeighborhood}}
+            <p class="winner-text">
+              <strong>{{comparisonData.quieterNeighborhood}}</strong> is quieter by 
+              <strong>{{comparisonData.scoreDifference}}</strong> points
+            </p>
+          {{/if}}
+        </div>
+      </div>
+
+      <div class="comparison-card">
+        <div class="comparison-card-header">
+          <h3>{{neighborhood2.name}}</h3>
+          <p class="comparison-borough">{{neighborhood2.borough}}</p>
+        </div>
+        
+        <div class="quiet-score-comparison">
+          <div class="score-circle-small" style="border-color: {{neighborhood2.quietScoreColor}};">
+            <span class="score-value">{{neighborhood2.quietScore}}</span>
+          </div>
+          <p class="score-label">{{neighborhood2.quietScoreDescription}}</p>
+        </div>
+
+        <div class="comparison-stats">
+          <div class="comparison-stat">
+            <span class="stat-label">Total Complaints</span>
+            <span class="stat-value">{{neighborhood2.totalComplaints}}</span>
+          </div>
+          <div class="comparison-stat">
+            <span class="stat-label">Avg Intensity</span>
+            <span class="stat-value">{{neighborhood2.avgIntensity}}/10</span>
+          </div>
+          <div class="comparison-stat">
+            <span class="stat-label">Peak Time</span>
+            <span class="stat-value">{{neighborhood2.peakNoiseTime}}</span>
+          </div>
+          <div class="comparison-stat">
+            <span class="stat-label">Peak Day</span>
+            <span class="stat-value">{{neighborhood2.peakNoiseDay}}</span>
+          </div>
+        </div>
+
+        <div class="comparison-personality">
+          <h4>Noise Personality</h4>
+          <p>{{neighborhood2.noisePersonality}}</p>
+        </div>
+
+        <div class="comparison-top-complaints">
+          <h4>Top Complaint Types</h4>
+          <ul class="complaint-list">
+            {{#each neighborhood2.topComplaintTypes}}
+              <li>
+                <span class="complaint-name">{{type}}</span>
+                <span class="complaint-percentage">{{percentage}}%</span>
+              </li>
+            {{/each}}
+          </ul>
+        </div>
+
+        <a href="/neighborhoods/{{neighborhood2._id}}" class="detail-link">
+          View Full Profile →
+        </a>
+      </div>
+    </div>
+  </div>
+
+{{else}}
+  <div class="comparison-selector">
+    <div class="selector-header">
+      <h2>Compare Two Neighborhoods</h2>
+      <p>Select two neighborhoods to compare their noise profiles side-by-side.</p>
+    </div>
+
+    {{#if error}}
+      <div class="error-message">{{error}}</div>
+    {{/if}}
+
+    <form action="/neighborhoods/compare" method="GET" class="comparison-form">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="id1">First Neighborhood</label>
+          <select name="id1" id="id1" required>
+            <option value="">-- Select a neighborhood --</option>
+            {{#each neighborhoods}}
+              <option value="{{_id}}" {{#if (eq _id ../selectedId1)}}selected{{/if}}>
+                {{name}} ({{borough}})
+              </option>
+            {{/each}}
+          </select>
+        </div>
+
+        <div class="form-divider">
+          <span class="vs-text">VS</span>
+        </div>
+
+        <div class="form-group">
+          <label for="id2">Second Neighborhood</label>
+          <select name="id2" id="id2" required>
+            <option value="">-- Select a neighborhood --</option>
+            {{#each neighborhoods}}
+              <option value="{{_id}}" {{#if (eq _id ../selectedId2)}}selected{{/if}}>
+                {{name}} ({{borough}})
+              </option>
+            {{/each}}
+          </select>
+        </div>
+      </div>
+
+      <button type="submit" class="compare-button">Compare Neighborhoods</button>
+    </form>
+
+    <div class="quick-links">
+      <p>Or browse all neighborhoods:</p>
+      <a href="/neighborhoods" class="browse-link">View All Neighborhoods →</a>
+    </div>
+  </div>
+{{/if}}

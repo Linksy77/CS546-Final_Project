@@ -1,0 +1,38 @@
+<div class="neighborhoods-header">
+  <p class="neighborhoods-intro">
+    Explore {{totalCount}} NYC neighborhoods and their noise profiles. 
+    Select any neighborhood to view detailed statistics, or 
+    <a href="/neighborhoods/compare" class="inline-link">compare two neighborhoods</a> side-by-side.
+  </p>
+</div>
+
+<div class="boroughs-grid">
+  {{#each neighborhoods}}
+    {{#if this.length}}
+      <section class="borough-section">
+        <h3 class="borough-name">{{@key}}</h3>
+        <div class="neighborhoods-list">
+          {{#each this}}
+            <a href="/neighborhoods/{{_id}}" class="neighborhood-card">
+              <div class="neighborhood-card-header">
+                <h4 class="neighborhood-card-name">{{name}}</h4>
+                <span class="quiet-score-badge" style="background-color: {{quietScoreColor}};">
+                  {{quietScore}}
+                </span>
+              </div>
+              <p class="neighborhood-card-personality">{{noisePersonality}}</p>
+              <div class="neighborhood-card-meta">
+                <span class="meta-item">{{totalComplaints}} complaints</span>
+                <span class="meta-item">Peak: {{peakNoiseTime}}</span>
+              </div>
+            </a>
+          {{/each}}
+        </div>
+      </section>
+    {{/if}}
+  {{/each}}
+</div>
+
+<div class="neighborhoods-cta">
+  <a href="/neighborhoods/compare" class="cta-button">Compare Neighborhoods →</a>
+</div>

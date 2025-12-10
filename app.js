@@ -19,7 +19,8 @@ app.use('/public', express.static(path.join(__dirname, 'public')));
 app.engine('handlebars', exphbs({
   helpers: {
     increment: (val) => Number(val) + 1,
-    decrement: (val) => Math.max(1, Number(val) - 1)
+    decrement: (val) => Math.max(1, Number(val) - 1),
+    eq: (a, b) => a === b 
   }
 }));
 app.set('view engine', 'handlebars');

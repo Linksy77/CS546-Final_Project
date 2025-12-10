@@ -1,0 +1,93 @@
+<div class="neighborhood-detail">
+  <div class="neighborhood-hero">
+    <div class="hero-content">
+      <div class="breadcrumb">
+        <a href="/neighborhoods" class="breadcrumb-link">← All Neighborhoods</a>
+      </div>
+      <h2 class="hero-title">{{neighborhood.name}}</h2>
+      <p class="hero-subtitle">{{neighborhood.borough}} • {{scoreDescription}}</p>
+      <div class="hero-tags">
+        {{#if personalityTag}}
+          <span class="personality-tag">{{personalityTag}}</span>
+        {{/if}}
+      </div>
+    </div>
+    
+    <div class="quiet-score-display">
+      <div class="score-circle" style="border-color: {{scoreColor}};">
+        <span class="score-value">{{neighborhood.quietScore}}</span>
+        <span class="score-label">Quiet Score</span>
+      </div>
+      <p class="score-description">{{scoreDescription}}</p>
+    </div>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card">
+      <h3 class="stat-title">Noise Personality</h3>
+      <p class="stat-value-text">{{neighborhood.noisePersonality}}</p>
+    </div>
+
+    <div class="stat-card">
+      <h3 class="stat-title">Total Complaints</h3>
+      <p class="stat-value-large">{{neighborhood.totalComplaints}}</p>
+      <p class="stat-subtitle">
+        {{stats.recentComplaints}} in the last 30 days
+      </p>
+    </div>
+
+    <div class="stat-card">
+      <h3 class="stat-title">Average Intensity</h3>
+      <p class="stat-value-large">{{neighborhood.avgIntensity}}/10</p>
+      <div class="intensity-bar">
+        <div class="intensity-fill" style="width: {{neighborhood.avgIntensity}}0%;"></div>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <h3 class="stat-title">Peak Noise Time</h3>
+      <p class="stat-value-medium">{{neighborhood.peakNoiseTime}}</p>
+      <p class="stat-subtitle">{{neighborhood.peakNoiseDay}}s</p>
+    </div>
+  </div>
+
+  <div class="complaints-breakdown">
+    <h3 class="section-title">Top Complaint Types</h3>
+    <div class="complaint-types-grid">
+      {{#each neighborhood.topComplaintTypes}}
+        <div class="complaint-type-card">
+          <div class="complaint-type-bar" style="width: {{percentage}}%;"></div>
+          <div class="complaint-type-info">
+            <span class="complaint-type-name">{{type}}</span>
+            <span class="complaint-type-count">{{count}} ({{percentage}}%)</span>
+          </div>
+        </div>
+      {{/each}}
+    </div>
+  </div>
+
+  <div class="location-info">
+    <h3 class="section-title">Location Details</h3>
+    <div class="location-grid">
+      <div class="location-item">
+        <span class="location-label">Community District:</span>
+        <span class="location-value">{{neighborhood.communityDistrict}}</span>
+      </div>
+      <div class="location-item">
+        <span class="location-label">Zip Codes:</span>
+        <span class="location-value">{{#each neighborhood.zipCodes}}{{this}}{{#unless @last}}, {{/unless}}{{/each}}</span>
+      </div>
+      <div class="location-item">
+        <span class="location-label">Last Updated:</span>
+        <span class="location-value">{{neighborhood.lastUpdated}}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="comparison-cta">
+    <p>Want to compare this neighborhood with another?</p>
+    <a href="/neighborhoods/compare?id1={{neighborhood._id}}" class="cta-button">
+      Compare with Another Neighborhood →
+    </a>
+  </div>
+</div>

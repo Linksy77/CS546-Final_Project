@@ -1,7 +1,7 @@
 {
   "name": "noise-complaint-detective",
   "version": "1.0.0",
-  "description": "VERY VERY INCOMPLETE \n Web Application used to track, submit, and cosign noise complaints in New York City.",
+  "description": "Web Application used to track, submit, and cosign noise complaints in New York City.",
   "type": "module",
   "main": "app.js",
   "scripts": {

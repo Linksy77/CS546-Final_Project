@@ -344,12 +344,12 @@ export const calculateQuietScore = (stats, boroughStats = null) => {
  * @returns {string} Description
  */
 export const getQuietScoreDescription = (score) => {
-  if (score >= 8.5) return 'Exceptionally Quiet';
-  if (score >= 7.0) return 'Very Quiet';
-  if (score >= 5.5) return 'Moderately Quiet';
-  if (score >= 4.0) return 'Average';
-  if (score >= 2.5) return 'Somewhat Noisy';
-  if (score >= 1.0) return 'Noisy';
+  if (score >= 9.0) return 'Exceptionally Quiet';
+  if (score >= 7.5) return 'Very Quiet';
+  if (score >= 6.0) return 'Moderately Quiet';
+  if (score >= 5.0) return 'Average';
+  if (score >= 3.0) return 'Somewhat Noisy';
+  if (score >= 2.0) return 'Noisy';
   return 'Very Noisy';
 };
 
