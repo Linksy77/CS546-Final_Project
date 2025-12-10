@@ -9,7 +9,9 @@
     "neighborhood-seed": "node tasks/neighborhood-seed.js",
     "import-311-complaints": "node tasks/complaint-import.js",
     "users-seed": "node tasks/users-seed.js",
-    "recalculate-stats": "node tasks/recalculate-stats.js"
+    "recalculate-stats": "node tasks/recalculate-stats.js",
+    "update-intensity": "node tasks/bug_fixes/update-intensity.js"
+
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",

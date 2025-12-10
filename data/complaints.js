@@ -22,6 +22,59 @@ const TIME_OF_DAY_BUCKETS = [
   { name: 'Evening', start: 18, end: 21 }
 ];
 
+const COMPLAINT_TYPE_INTENSITIES = {
+  'Noise - Helicopter': 9,
+  'Noise - Aircraft': 9,
+
+  'Noise - Aircraft/Boat': 8,
+  'Noise - Construction': 8,
+  'Construction': 8,
+  
+  'Loud Music/Party': 7,
+  'Loud Music': 7,
+  
+  'Noise - Commercial': 6,
+  'Noise': 6,
+  'Noise - Residential': 6,
+
+  'Noise - House of Worship': 5,
+  'Noise - Vehicle': 5,
+  'Vehicle': 5,
+  
+  'Noise - Park': 4,
+  'Noise - Street/Sidewalk': 4
+
+};
+
+const assignIntensity = (complaintType) => {
+  if (!complaintType) {
+    return 5; 
+  }
+  
+  if (COMPLAINT_TYPE_INTENSITIES[complaintType]) {
+    return COMPLAINT_TYPE_INTENSITIES[complaintType];
+  }
+  
+  const type = complaintType.toLowerCase();
+  const patterns = [
+    { kw: ['helicopter', 'aircraft'], value: 9 },
+    { kw: ['construction', 'jackhammer'], value: 8 },
+    { kw: ['party', 'loud music', 'bass'], value: 7 },
+    { kw: ['commercial', 'restaurant', 'bar', 'residential'], value: 6 },
+    { kw: ['vehicle', 'car', 'truck'], value: 5 },
+    { kw: ['dog', 'barking', 'animal'], value: 4 },
+    { kw: ['park', 'recreation'], value: 3 }
+  ];
+
+  for (const { kw, value } of patterns) {
+    for (const keyword of kw) {
+      if (type.includes(keyword)) return value;
+    }
+  }
+
+  return 5;
+};
+
 const normalizeBorough = (value) => {
   if (!value) return null;
   const key = value.toUpperCase().trim();
@@ -82,7 +135,7 @@ const map311RecordToComplaint = (record) => {
     dateSubmitted: created || new Date(),
     timeOfDay: bucketTimeOfDay(created),
     dayOfWeek: deriveDayOfWeek(created),
-    intensity: null,
+    intensity: assignIntensity(complaintType),
     description: (record.descriptor || record.resolution_description || '').trim() || null,
     status: record.status || 'Open',
     source: '311',
