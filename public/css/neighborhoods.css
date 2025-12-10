@@ -471,10 +471,6 @@
   margin: 0 0 1.5rem 0;
 }
 
-/* ===================================
-   COMPARISON PAGE
-   =================================== */
-
 .comparison-selector,
 .comparison-results {
   max-width: 1200px;
@@ -845,10 +841,6 @@
   margin: 0;
   line-height: 1.6;
 }
-
-/* ===================================
-   RESPONSIVE DESIGN
-   =================================== */
 
 @media (max-width: 768px) {
   .neighborhoods-list {
