@@ -179,14 +179,44 @@ button:active{
   padding-bottom: 20px;
 }
 
-details {
+.details-complaint-form {
   padding: 20px;
   background-color:rgb(255, 255, 255);
   border-radius: 10px;
 }
 
-summary {
+.summary-complaint-form {
   padding-bottom: 20px;
   color: #0a348e;
   text-decoration: underline;
+}
+
+.comment-input {
+    border: 1.5px solid rgb(37, 40, 65);
+    border-radius: 4px;
+    padding: 2px;
+}
+  
+.comment-input:focus{
+    outline: 1px solid rgb(37, 40, 65);
+}
+
+.comment-button {
+  margin-top: 10px;
+  background-color: rgb(226, 226, 226);
+  border: 1.5px solid rgb(37, 40, 65);
+  border-radius: 2px;
+  /* padding: 2px 4px; */
+}
+
+.comment-button:hover{
+  background-color: rgb(201, 201, 201);
+}
+
+.comment-button:active{
+  background-color: rgb(173, 173, 173);
+}
+
+.comment{
+  padding: 6px;
 }

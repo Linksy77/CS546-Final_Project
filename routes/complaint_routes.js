@@ -18,9 +18,10 @@ router
           const { complaints, total, totalPages } = await getComplaintPage(page, limit);
           const user = req.session.user || null;
           const cosignedSet = new Set(user?.cosignedComplaints || []);
-          const complaintsWithCosigns = complaints.map((c) => ({
+          const complaintsWithCosignsAndComments = complaints.map((c) => ({
             ...c,
             cosignCount: c.cosignCount || 0,
+            comments: c.comments,
             userHasCosigned: cosignedSet.has(c._id)
           }));
 
@@ -28,7 +29,7 @@ router
             title: 'Noise Complaint Detective',
             user,
             showCosignColumn: !!user,
-            complaints: complaintsWithCosigns,
+            complaints: complaintsWithCosignsAndComments,
             page,
             totalPages,
             limit,
@@ -199,9 +200,10 @@ router
         const { complaints, total, totalPages } = await getComplaintPage(page, limit);
         const user = req.session.user || null;
         const cosignedSet = new Set(user?.cosignedComplaints || []);
-        const complaintsWithCosigns = complaints.map((c) => ({
+        const complaintsWithCosignsAndComments = complaints.map((c) => ({
           ...c,
           cosignCount: c.cosignCount || 0,
+          comments: c.comments,
           userHasCosigned: cosignedSet.has(c._id)
         }));
 
@@ -209,7 +211,7 @@ router
           title: 'Noise Complaint Detective',
           user,
           showCosignColumn: !!user,
-          complaints: complaintsWithCosigns,
+          complaints: complaintsWithCosignsAndComments,
           page,
           totalPages,
           limit,
@@ -264,5 +266,37 @@ router.post('/complaints/:id/cosign', async (req, res) => {
     return res.status(500).json({ error: 'Could not update cosign' });
   }
 });
+
+router.post('/complaints/:id/comments', async (req, res) => {
+  if(!req.session.user) {
+    return res.status(401).render('home', {message: "You must be logged in!"});
+  }
+
+  let complaintId = req.params.id;
+  let commentText = xss(req.body.commentText);
+
+  try {
+    isValidObjectId(complaintId, "Complaint ID");
+    helpers.isValidString(commentText, "Comment text");
+
+    let updatedUserInfo = await userDataFxns.commentOnComplaint(
+      req.session.user._id,
+      complaintId,
+      commentText
+    );
+
+    const page = req.body.page || 1;
+    const limit = req.body.limit || 25;
+
+    req.session.user.commentedComplaints = updatedUserInfo.commentedComplaints;
+
+    return res.redirect(`/?page=${page}&limit=${limit}#comments-${req.params.id}`);
+
+  } catch (e) {
+    return res.status(400).render('home', { message: e.toString() });
+  }
+
+
+})
 
 export default router;

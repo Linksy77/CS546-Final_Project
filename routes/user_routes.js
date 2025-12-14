@@ -106,7 +106,7 @@ router
 
     // Cleaning input fields from req.body to prevent XSS attacks
     username = xss(username);
-    email = xss(username);
+    email = xss(email);
     password = xss(password);
     firstName = xss(firstName);
     lastName = xss(lastName);

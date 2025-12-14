@@ -3,8 +3,8 @@
 {{/if}}
 
 {{#if user}}
-  <details>
-    <summary>Want to submit a complaint of your own? Click here!</summary>
+  <details class="details-complaint-form">
+    <summary class="summary-complaint-form">Want to submit a complaint of your own? Click here!</summary>
     <form action="/" method="POST" id="complaint-submission-form">
       <div class="form-field">
         <label for="complaintType">Complaint Type:</label>
@@ -165,6 +165,32 @@
             <td>{{dateSubmitted}}</td>
             <td>{{description}}</td>
           </tr>
+          <tr id="complaint-{{_id}}">
+            <td colspan="{{#if ../showCosignColumn}}6{{else}}5{{/if}}">
+              <details id="comments-{{_id}}">
+                <summary>Comments</summary>
+                <div>
+                {{#each comments}}
+                  <div class="comment">
+                    <strong>{{username}}</strong> ({{timestamp}}): {{commentText}}
+                  </div>
+                {{/each}}
+                </div>
+                {{#if ../user}}
+                  <div>
+                    <form action="/complaints/{{_id}}/comments" method="POST">
+                      <input type="hidden" name="page" value="{{../../page}}">
+                      <input type="hidden" name="limit" value="{{../../queryLimit}}">
+
+                      <label for="commentText-{{_id}}">Comment:</label>
+                      <input type="text" name="commentText" id="commentText" class="comment-input" placeholder="Comment" required>
+                      <button type="submit" name="submit-comment-button" id="submit-comment-button" class="comment-button">Submit Comment</button>
+                    </form>
+                  </div>
+                {{/if}}
+              </details>
+            </td>
+          </tr>
         {{/each}}
       </tbody>
     </table>
@@ -233,3 +259,15 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 {{/if}}
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  if (location.hash.startsWith('#comments-')) {
+    const details = document.querySelector(location.hash);
+    if (details && details.tagName === 'DETAILS') {
+      details.open = true;
+      details.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+});
+</script>

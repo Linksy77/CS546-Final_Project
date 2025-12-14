@@ -400,7 +400,10 @@ export const commentOnComplaint = async (userId, noiseComplaintId, commentText) 
     userId = isValidObjectId(userId);
     noiseComplaintId = isValidObjectId(noiseComplaintId);
 
-    commentText = isValidString(commentText);
+    // console.log("commentText (users.js):")
+    // console.log(commentText);
+
+    commentText = isValidString(commentText, "Comment text");
 
     const user = await getUserById(userId);
     let username = user.username;
@@ -456,8 +459,8 @@ export const commentOnComplaint = async (userId, noiseComplaintId, commentText) 
         throw new Error("Could not update user's comments!");
     }
 
-    // Returning the newly created comment object
-    return commentToBeAdded;
+    // Returning the updated user info object
+    return updatedUserInfo;
 
 };
 
