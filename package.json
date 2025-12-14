@@ -10,8 +10,8 @@
     "import-311-complaints": "node tasks/complaint-import.js",
     "users-seed": "node tasks/users-seed.js",
     "recalculate-stats": "node tasks/recalculate-stats.js",
-    "update-intensity": "node tasks/bug_fixes/update-intensity.js"
-
+    "update-intensity": "node tasks/bug_fixes/update-intensity.js",
+    "seed-all": "npm run users-seed && npm run neighborhood-seed && npm run import-311-complaints && npm run recalculate-stats"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",
