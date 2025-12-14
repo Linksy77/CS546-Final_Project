@@ -11,7 +11,7 @@ const nycNeighborhoods = [
     name: 'Lower Manhattan',
     borough: 'Manhattan',
     communityDistrict: '01',
-    blocks: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'], // Sample blocks
+    blocks: ['600', '601', '602', '603', '604', '605'], 
     zipCodes: ['10004', '10005', '10006', '10007', '10038', '10280']
   },
   {
