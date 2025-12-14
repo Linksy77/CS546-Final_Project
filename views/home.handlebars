@@ -2,6 +2,127 @@
   <div class="notice">{{message}}</div>
 {{/if}}
 
+{{#if user}}
+  <details>
+    <summary>Want to submit a complaint of your own? Click here!</summary>
+    <form action="/" method="POST" id="complaint-submission-form">
+      <div class="form-field">
+        <label for="complaintType">Complaint Type:</label>
+        <input list="complaintTypes" name="complaintType" id="complaintType" placeholder="Complaint Type">
+        <datalist id="complaintTypes">
+          <option value="Noise"></option>
+          <option value="Noise - Residential"></option>
+          <option value="Noise - Commercial"></option>
+          <option value="Noise - Street/Sidewalk"></option>
+          <option value="Noise - Vehicle"></option>
+          <option value="Noise - Aircraft/Boat"></option>
+          <option value="Noise - Construction"></option>
+          <option value="Noise - Park"></option>
+        </datalist>
+      </div>
+      <div class="form-field">
+        <label for="address">Address:</label>
+        <input type="text" name="address" id="address" placeholder="Address">
+      </div>
+      <div class="form-field">
+        <label for="borough">Borough:</label>
+        <input list="boroughs" name="borough" id="borough" placeholder="Borough">
+        <datalist id="boroughs">
+          <option value="Manhattan"></option>
+          <option value="Brooklyn"></option>
+          <option value="Queens"></option>
+          <option value="Bronx"></option>
+          <option value="Staten Island"></option>
+        </datalist>
+      </div>
+      <div class="form-field">
+        <label for="block">Block:</label>
+        <input type="text" name="block" id="block" placeholder="Block">
+      </div>
+      <div class="form-field">
+        <label for="neighborhood">Neighborhood:</label>
+        <select name="neighborhood" id="neighborhood">
+          <option value="Lower Manhattan">Lower Manhattan</option>
+          <option value="Greenwich Village/SoHo">Greenwich Village/SoHo</option>
+          <option value="Lower East Side/Chinatown">Lower East Side/Chinatown</option>
+          <option value="Chelsea/Clinton/Midtown">Chelsea/Clinton/Midtown</option>
+          <option value="Midtown">Midtown</option>
+          <option value="Stuyvesant Town/Turtle Bay">Stuyvesant Town/Turtle Bay</option>
+          <option value="Upper West Side">Upper West Side</option>
+          <option value="Upper East Side">Upper East Side</option>
+          <option value="Morningside Heights/Hamilton Heights">Morningside Heights/Hamilton Heights</option>
+          <option value="Central Harlem">Central Harlem</option>
+          <option value="East Harlem">East Harlem</option>
+          <option value="Washington Heights/Inwood">Washington Heights/Inwood</option>
+          <option value="Williamsburg/Greenpoint">Williamsburg/Greenpoint</option>
+          <option value="Brooklyn Heights/Fort Greene">Brooklyn Heights/Fort Greene</option>
+          <option value="Bedford-Stuyvesant">Bedford-Stuyvesant</option>
+          <option value="Bushwick">Bushwick</option>
+          <option value="Park Slope/Carroll Gardens">Park Slope/Carroll Gardens</option>
+          <option value="Astoria/Long Island City">Astoria/Long Island City</option>
+          <option value="Flushing/Whitestone">Flushing/Whitestone</option>
+          <option value="Jackson Heights/Corona">Jackson Heights/Corona</option>
+          <option value="Mott Haven/Hunts Point">Mott Haven/Hunts Point</option>
+          <option value="Fordham/University Heights">Fordham/University Heights</option>
+          <option value="St. George/Stapleton">St. George/Stapleton</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label for="zipCode">Zip Code:</label>
+        <input type="text" name="zipCode" id="zipCode" placeholder="Zip Code">
+      </div>
+      <div class="form-field">
+        <label for="latitude">Latitude:</label>
+        <input type="number" name="latitude" id="latitude" step="any">
+      </div>
+      <div class="form-field">
+        <label for="longitude">Longitude:</label>
+        <input type="number" name="longitude" id="longitude" step="any">
+      </div>
+      <div class="form-field">
+        <label for="timeOfDay">Time of Day:</label>
+        <input list="timesOfDay" name="timeOfDay" id="timeOfDay" placeholder="Time of Day">
+        <datalist id="timesOfDay">
+          <option value="Morning"></option>
+          <option value="Afternoon"></option>
+          <option value="Evening"></option>
+          <option value="Night"></option>
+        </datalist>
+      </div>
+      <div class="form-field">
+        <label for="dayOfWeek">Day of Week:</label>
+        <input list="daysOfWeek" name="dayOfWeek" id="dayOfWeek" placeholder="Day of Week">
+        <datalist id="daysOfWeek">
+          <option value="Monday"></option>
+          <option value="Tuesday"></option>
+          <option value="Wednesday"></option>
+          <option value="Thursday"></option>
+          <option value="Friday"></option>
+          <option value="Saturday"></option>
+          <option value="Sunday"></option>
+        </datalist>
+      </div>
+      <div class="form-field">
+        <label for="intensity">Intensity:</label>
+        <input type="number" id="intensity" name="intensity" min="1" max="10">
+      </div>
+      <div class="form-field">
+        <label for="description">Description:</label>
+        <input type="text" id="description" name="description" placeholder="Description">
+      </div>
+      <div class="form-field">
+        <label for="status">Status:</label>
+        <input list="statuses" name="status" id="status" placeholder="Status">
+        <datalist id="statuses">
+          <option value="Open"></option>
+          <option value="In Progress"></option>
+          <option value="Resolved"></option>
+          <option value="Closed"></option>
+        </datalist>
+      </div>
+      <button name="submit-complaint-button" id="submit-complaint-button">Submit Complaint</button>
+    </form>
+  </details>
 {{#if showCosignColumn}}
   <div id="cosign-error" class="notice error" hidden></div>
 {{/if}}

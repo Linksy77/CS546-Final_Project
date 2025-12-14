@@ -1,6 +1,7 @@
 import { ObjectId } from "mongodb";
 import { users } from '../config/mongoCollections.js';
 import { noiseComplaints } from '../config/mongoCollections.js';
+import { neighborhoods } from '../config/mongoCollections.js';
 import bcrypt from 'bcryptjs';
 import {
     isValidString,
@@ -275,17 +276,35 @@ export const submitNoiseComplaint = async (
     // Ensuring borough is valid
     borough = isValidBorough(borough);
 
-    // Ensuring block is valid
-    block = isValidBlockNumber(block);
-
     // Ensuring neighborhood is valid
     neighborhood = isValidNeighborhood(neighborhood);
 
     // Ensuring zipCode is valid
     zipCode = isValidZipCode(zipCode);
 
+    const neighborhoodsCollection = await neighborhoods();
+    let currNeighborhoodData = await neighborhoodsCollection.findOne({name: neighborhood});
+    let validNeighborhoodZipCodes = await currNeighborhoodData.zipCodes;
+
+    // console.log("validNeighborhoodZipCodes =");
+    // console.log(validNeighborhoodZipCodes);
+    // console.log("zipCode =");
+    // console.log(zipCode);
+
+    if(!(validNeighborhoodZipCodes.includes(zipCode))) {
+        throw new Error("Zip code must correlate to proper neighborhood!");
+    }
+
+    // Ensuring block is valid
+    block = isValidBlockNumber(block);
+
+    let validNeighborhoodBlocks = await currNeighborhoodData.blocks;
+
+    if(!(validNeighborhoodBlocks.includes(block))) {
+        throw new Error("Block number must correlate to proper neighborhood!");
+    }
+
     // Ensuring location is valid; returning GeoJSON Point w/ coords
-    // !! ADD ADDITIONAL CHECKING IN isValidLocation TO MAKE SURE LOCATION IS IN NYC
     let location = isValidLocation(longitude, latitude);
 
     // Ensuring timeOfDay is valid
@@ -307,6 +326,10 @@ export const submitNoiseComplaint = async (
     userId = isValidObjectId(userId);
     const userWhoSubmitted = await getUserById(userId);
 
+    const complaintsCollection = await noiseComplaints();
+    let amtOfComplaints = await complaintsCollection.countDocuments({});
+    let newSourceId = `00${amtOfComplaints}`;
+
     // Creating new noise complaint and adding it to noiseComplaints
     const newNoiseComplaint = {
         complaintType : complaintType,
@@ -323,14 +346,13 @@ export const submitNoiseComplaint = async (
         description : description,
         status : status,
         source : "user",
-        sourceId : null,
+        sourceId : newSourceId,
         submittedBy : userId,
         cosignCount : 0,
         cosigns : [],
         comments : []
     };
 
-    const complaintsCollection = await noiseComplaints();
     const complaintInsertInfo = await complaintsCollection.insertOne(newNoiseComplaint);
 
     if(!complaintInsertInfo.acknowledged || !complaintInsertInfo.insertedId) {
@@ -340,6 +362,9 @@ export const submitNoiseComplaint = async (
     // Updating user's submittedComplaints to include ID of new complaint
     let usersSubmittedComplaints = userWhoSubmitted.submittedComplaints;
     usersSubmittedComplaints.push(complaintInsertInfo.insertedId.toString())
+
+    // console.log("usersCubmittedComplaints (updated) =");
+    // console.log(usersSubmittedComplaints);
 
     const usersCollection = await users();
     const updatedUser = await usersCollection.findOneAndUpdate(
@@ -353,6 +378,10 @@ export const submitNoiseComplaint = async (
     }
 
     updatedUser._id = updatedUser._id.toString();
+
+    // console.log("updatedUser =");
+    // console.log(updatedUser);
+
     return updatedUser;
 
 };

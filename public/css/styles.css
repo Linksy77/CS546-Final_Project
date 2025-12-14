@@ -178,3 +178,15 @@ button:active{
   font-weight: bold;
   padding-bottom: 20px;
 }
+
+details {
+  padding: 20px;
+  background-color:rgb(255, 255, 255);
+  border-radius: 10px;
+}
+
+summary {
+  padding-bottom: 20px;
+  color: #0a348e;
+  text-decoration: underline;
+}
