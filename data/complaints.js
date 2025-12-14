@@ -254,6 +254,36 @@ export const getComplaintPage = async (page = 1, limit = 25) => {
   };
 };
 
+let _searchIndexEnsured = false;
+let _searchIndexPromise = null;
+
+const ensureSearchIndex = async (collection) => {
+  if (_searchIndexEnsured) return;
+  if (_searchIndexPromise) return _searchIndexPromise;
+
+  _searchIndexPromise = (async () => {
+    const indexes = await collection.indexes();
+    const hasTextIndex = indexes.some((idx) =>
+      Object.values(idx.key).includes('text')
+    );
+
+    if (!hasTextIndex) {
+      await collection.createIndex({
+        address: 'text',
+        neighborhood: 'text',
+        borough: 'text',
+        complaintType: 'text',
+        description: 'text'
+      });
+    }
+
+    _searchIndexEnsured = true;
+  })();
+
+  return _searchIndexPromise;
+};
+
+
 export const searchComplaints = async (q, { page = 1, limit = 25 } = {}) => {
   q = isValidString(q, 'Search query');
   const trimmed = q.trim();
@@ -268,6 +298,7 @@ export const searchComplaints = async (q, { page = 1, limit = 25 } = {}) => {
   }
 
   const collection = await noiseComplaints();
+  await ensureSearchIndex(collection);
 
   const safeLimit = Math.max(1, Math.min(Number(limit) || 25, 100));
   const safePage = Math.max(1, Number(page) || 1);
@@ -308,20 +339,34 @@ export const searchComplaints = async (q, { page = 1, limit = 25 } = {}) => {
     };
   }
 
-  const textQuery = { $text: { $search: trimmed } };
+  let total = 0;
+let docs = [];
 
-  let total = await collection.countDocuments(textQuery);
+const textQuery = { $text: { $search: trimmed } };
 
-  let docs = [];
+try {
+  total = await collection.countDocuments(textQuery);
 
   if (total > 0) {
     docs = await collection
       .find(textQuery, { projection: { ...projectionBase, score: { $meta: 'textScore' } } })
-      .sort({ dateSubmitted: -1, score: { $meta: 'textScore' } })
+      .sort({ score: { $meta: 'textScore' }, dateSubmitted: -1 })
       .skip(skip)
       .limit(safeLimit)
       .toArray();
-  } else {
+  }
+} catch (e) {
+  const msg = String(e?.message || '').toLowerCase();
+  const isTextIndexIssue =
+    msg.includes('text index required') ||
+    msg.includes('$text') ||
+    e?.code === 27;
+
+  if (!isTextIndexIssue) throw e;
+}
+
+
+  if (!docs.length) {
     if (trimmed.length < 3) {
       return {
         complaints: [],
@@ -498,7 +543,7 @@ export const getTimeHeatmap = async () => {
   let total = 0;
 
   for (const r of rows) {
-    const dayIndex = (r.dow ?? 1) - 1; // Mongo: 1=Sun → 7=Sat
+    const dayIndex = (r.dow ?? 1) - 1;
     const hour = r.hour ?? 0;
 
     if (dayIndex >= 0 && dayIndex < 7 && hour >= 0 && hour < 24) {
