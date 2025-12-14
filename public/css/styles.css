@@ -221,6 +221,37 @@ button:active{
   padding: 6px;
 }
 
+.details-neighborhood-info {
+  padding: 8px;
+  margin-bottom: 10px;
+  background-color:rgb(223, 223, 223);
+  border-radius: 10px;
+}
+
+.summary-neighborhood-info {
+  padding-bottom: 10px;
+  font-size: 14px;
+  color: #03246a;
+  text-decoration: underline;
+}
+
+.allNeighborhoodInfo {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+.neighborhoodInfo {
+  font-size: 14px;
+  padding: 4px;
+  margin: 4px;
+  background-color:rgb(245, 247, 251);
+  border-radius: 10px;
+}
+
+.neighborhoodInfo p:first-of-type {
+  font-weight: bold;
+}
+
 table th:nth-child(4),
 table td:nth-child(4) {
   white-space: nowrap;
