@@ -1,4 +1,5 @@
 import {Router} from 'express';
+import xss from 'xss';
 const router = Router();
 import * as userDataFxns from '../data/users.js';
 import * as helpers from '../helpers.js';
@@ -103,7 +104,18 @@ router
     // console.log(role);
     // console.log();
 
-    // Calling createAccount function with (now validated) fields from req.body
+    // Cleaning input fields from req.body to prevent XSS attacks
+    username = xss(username);
+    email = xss(username);
+    password = xss(password);
+    firstName = xss(firstName);
+    lastName = xss(lastName);
+    city = xss(city);
+    state = xss(state);
+    zipCode = xss(zipCode);
+    role = xss(role);
+
+    // Calling createAccount function with (now validated + cleaned) fields from req.body
     let result = await userDataFxns.createAccount(
         username,
         email,
@@ -178,12 +190,17 @@ router
         return res.status(400).render('login', {title: "Log In", error: e});
     }
 
+    // Cleaning input fields from req.body to prevent XSS attacks
+    username = xss(username);
+    password = xss(password);
+
     try {
         // Calling logIn function
         let result = await userDataFxns.logIn(username, password);
 
         // Saving user session:
         req.session.user = {
+            _id: result._id,
             username: result.username,
             email: result.email,
             emailVerified: result.emailVerified,
