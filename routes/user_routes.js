@@ -200,7 +200,7 @@ router
 
         // Saving user session:
         req.session.user = {
-            _id: result._id,
+            _id: result._id.toString(),
             username: result.username,
             email: result.email,
             emailVerified: result.emailVerified,

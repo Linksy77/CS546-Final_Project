@@ -123,6 +123,8 @@
       <button name="submit-complaint-button" id="submit-complaint-button">Submit Complaint</button>
     </form>
   </details>
+{{#if showCosignColumn}}
+  <div id="cosign-error" class="notice error" hidden></div>
 {{/if}}
 
 {{#if complaints.length}}
@@ -130,6 +132,9 @@
     <table>
       <thead>
         <tr>
+          {{#if showCosignColumn}}
+            <th>Cosign</th>
+          {{/if}}
           <th>Type</th>
           <th>Borough</th>
           <th>Zip</th>
@@ -140,6 +145,19 @@
       <tbody>
         {{#each complaints}}
           <tr>
+            {{#if ../showCosignColumn}}
+              <td class="cosign-cell">
+                <label>
+                  <input
+                    type="checkbox"
+                    class="cosign-toggle"
+                    data-id="{{_id}}"
+                    {{#if userHasCosigned}}checked{{/if}}
+                  />
+                  <span class="cosign-count" data-id="{{_id}}">{{cosignCount}}</span>
+                </label>
+              </td>
+            {{/if}}
             <td>{{complaintType}}</td>
             <td>{{borough}}</td>
             <td>{{zipCode}}</td>
@@ -165,4 +183,52 @@
   </div>
 {{else}}
   <p>No complaints to display yet.</p>
+{{/if}}
+
+{{#if showCosignColumn}}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const errorBox = document.getElementById('cosign-error');
+
+  const showError = (msg) => {
+    if (!errorBox) return;
+    errorBox.textContent = msg || 'Could not update cosign.';
+    errorBox.hidden = false;
+    setTimeout(() => { errorBox.hidden = true; }, 3000);
+  };
+
+  document.querySelectorAll('.cosign-toggle').forEach((checkbox) => {
+    checkbox.addEventListener('change', async (event) => {
+      const box = event.target;
+      const complaintId = box.dataset.id;
+      const countEl = box.closest('tr').querySelector('.cosign-count');
+
+      const previousChecked = !box.checked;
+      const previousCount = countEl ? parseInt(countEl.textContent, 10) || 0 : 0;
+
+      try {
+        const response = await fetch(`/complaints/${complaintId}/cosign`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify({})
+        });
+
+        const data = await response.json();
+        if (!response.ok || !data.success) {
+          throw new Error(data.error || 'Request failed');
+        }
+
+        if (countEl) {
+          countEl.textContent = data.cosignCount ?? 0;
+        }
+        box.checked = data.hasCosigned;
+      } catch (err) {
+        box.checked = previousChecked;
+        if (countEl) countEl.textContent = previousCount;
+        showError(err.message);
+      }
+    });
+  });
+});
+</script>
 {{/if}}
