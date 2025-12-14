@@ -238,7 +238,9 @@ export const getComplaintPage = async (page = 1, limit = 25) => {
 
   const complaints = docs.map((doc) => ({
     ...doc,
-    _id: doc._id.toString()
+    _id: doc._id.toString(),
+    cosignCount: doc.cosignCount || 0,
+    cosigns: doc.cosigns || []
   }));
 
   const totalPages = Math.max(1, Math.ceil(total / safeLimit));
