@@ -26,7 +26,7 @@ For convenience we've put all of our seed scripts into one easy seed command. Ho
 npm run seed-all
 ```
 ### Seeding one by one (skip if you already seeded with the above seed-all command):
-1) Sample users (drops/reseeds the users collection with demo accounts)  
+1) Seeds the users collection with demo accounts 
 ```bash
 npm run users-seed
 ```
