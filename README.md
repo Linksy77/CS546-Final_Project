@@ -14,7 +14,7 @@ Noise Complaint Detective is a Node.js/Express + Handlebars app that lets users 
 
 ## Install dependencies
 ```bash
-npm i zod mongodb express bcryptjs express-session express-handlebars
+npm i zod mongodb express bcryptjs express-session express-handlebars xss @turf/turf
 ```
 
 ## Seeding data
