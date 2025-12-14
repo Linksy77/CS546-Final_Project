@@ -2,6 +2,7 @@ import express from 'express';
 import { engine as exphbs } from 'express-handlebars';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { startsBackStats } from './backStats.js';
 // import routes from './routes/index.js';
 import session from 'express-session';
 import constructorMethod from './routes/index.js';
@@ -117,4 +118,5 @@ constructorMethod(app);
 
 app.listen(PORT, () => {
   console.log(`Server listening on http://localhost:${PORT}`);
+  startsBackStats();
 });
