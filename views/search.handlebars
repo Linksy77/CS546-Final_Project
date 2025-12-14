@@ -1,0 +1,85 @@
+<form id="searchForm" action="/search" method="GET" class="search-bar">
+  <label for="q">Location Search</label>
+  <input
+    id="q"
+    name="q"
+    type="text"
+    placeholder="Street, neighborhood, borough, type, keyword…"
+    minlength="2"
+    maxlength="80"
+    value="{{q}}"
+  />
+
+  <label for="description" style="margin-left: 10px;">Description Filter</label>
+  <select
+    id="description"
+    name="description"
+    aria-label="Filter by description"
+    onchange="this.form.submit()"
+  >
+    <option value="">All</option>
+    {{#each descriptions}}
+      <option
+        value="{{this.description}}"
+        {{#ifEquals ../selectedDescription this.description}}selected{{/ifEquals}}
+      >
+        {{this.description}} ({{this.count}})
+      </option>
+    {{/each}}
+  </select>
+
+  <button type="submit">Search</button>
+  <button type="button" id="clearSearch">Clear</button>
+
+  <p id="searchError" class="error" aria-live="polite"></p>
+
+  {{#if error}}
+    <p class="error">{{error}}</p>
+  {{/if}}
+
+{{#if hasResults}}
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Borough</th>
+          <th>Zip</th>
+          <th>Date</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each complaints}}
+          <tr>
+            <td>{{complaintType}}</td>
+            <td>{{borough}}</td>
+            <td>{{zipCode}}</td>
+            <td>{{dateSubmitted}}</td>
+            <td>{{description}}</td>
+          </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="pager">
+    {{#if hasPrev}}
+      <a class="pager-link" href="/search?q={{q}}&description={{selectedDescription}}&page={{increment page}}&limit={{queryLimit}}">← Previous</a>
+    {{else}}
+      <span class="pager-disabled">← Previous</span>
+    {{/if}}
+
+    <span class="pager-info">Page {{page}} {{#if totalPages}}of {{totalPages}}{{/if}}</span>
+
+    {{#if hasNext}}
+      <a class="pager-link" href="/search?q={{q}}&description={{selectedDescription}}&page={{increment page}}&limit={{queryLimit}}">← Next</a>
+    {{else}}
+      <span class="pager-disabled">Next →</span>
+    {{/if}}
+  </div>
+{{else}}
+  {{#if q}}
+    <p>No results.</p>
+  {{/if}}
+{{/if}}

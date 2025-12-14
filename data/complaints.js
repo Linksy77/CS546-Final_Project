@@ -253,3 +253,266 @@ export const getComplaintPage = async (page = 1, limit = 25) => {
     totalPages
   };
 };
+
+export const searchComplaints = async (q, { page = 1, limit = 25 } = {}) => {
+  q = isValidString(q, 'Search query');
+  const trimmed = q.trim();
+
+  if (trimmed.length < 2) throw new Error('Search query must be at least 2 characters.');
+  if (trimmed.length > 80) throw new Error('Search query is too long.');
+
+  const isAllDigits = /^\d+$/.test(trimmed);
+  const isZipQuery = /^\d{5}$/.test(trimmed);
+  if (isAllDigits && !isZipQuery) {
+    throw new Error('Zip code searches must be exactly 5 digits.');
+  }
+
+  const collection = await noiseComplaints();
+
+  const safeLimit = Math.max(1, Math.min(Number(limit) || 25, 100));
+  const safePage = Math.max(1, Number(page) || 1);
+  const skip = (safePage - 1) * safeLimit;
+
+  const projectionBase = {
+    complaintType: 1,
+    borough: 1,
+    zipCode: 1,
+    dateSubmitted: 1,
+    description: 1,
+    address: 1,
+    neighborhood: 1
+  };
+  if (isZipQuery) {
+    const zipQuery = { zipCode: trimmed };
+
+    const total = await collection.countDocuments(zipQuery);
+
+    const docs = await collection
+      .find(zipQuery, { projection: projectionBase })
+      .sort({ dateSubmitted: -1 })
+      .skip(skip)
+      .limit(safeLimit)
+      .toArray();
+
+    const complaints = docs.map((doc) => ({ ...doc, _id: doc._id.toString() }));
+    const totalPages = Math.max(1, Math.ceil(total / safeLimit));
+
+    return {
+      complaints,
+      page: safePage,
+      limit: safeLimit,
+      total,
+      totalPages,
+      hasPrev: safePage > 1,
+      hasNext: safePage < totalPages
+    };
+  }
+
+  const textQuery = { $text: { $search: trimmed } };
+
+  let total = await collection.countDocuments(textQuery);
+
+  let docs = [];
+
+  if (total > 0) {
+    docs = await collection
+      .find(textQuery, { projection: { ...projectionBase, score: { $meta: 'textScore' } } })
+      .sort({ dateSubmitted: -1, score: { $meta: 'textScore' } })
+      .skip(skip)
+      .limit(safeLimit)
+      .toArray();
+  } else {
+    if (trimmed.length < 3) {
+      return {
+        complaints: [],
+        page: safePage,
+        limit: safeLimit,
+        total: 0,
+        totalPages: 1,
+        hasPrev: false,
+        hasNext: false
+      };
+    }
+
+    const re = new RegExp(`\\b${escapeRegex(trimmed)}`, 'i');
+    const regexQuery = {
+      $or: [
+        { address: re },
+        { neighborhood: re },
+        { borough: re },
+        { complaintType: re },
+        { description: re }
+      ]
+    };
+
+    total = await collection.countDocuments(regexQuery);
+
+    if (total === 0) {
+      return {
+        complaints: [],
+        page: safePage,
+        limit: safeLimit,
+        total: 0,
+        totalPages: 1,
+        hasPrev: false,
+        hasNext: false
+      };
+    }
+
+    docs = await collection
+      .find(regexQuery, { projection: projectionBase })
+      .sort({ dateSubmitted: -1 })
+      .skip(skip)
+      .limit(safeLimit)
+      .toArray();
+  }
+
+  const complaints = docs.map((doc) => ({ ...doc, _id: doc._id.toString() }));
+  const totalPages = Math.max(1, Math.ceil(total / safeLimit));
+
+  return {
+    complaints,
+    page: safePage,
+    limit: safeLimit,
+    total,
+    totalPages,
+    hasPrev: safePage > 1,
+    hasNext: safePage < totalPages
+  };
+};
+
+export const getTopDescriptions = async (limit = 50) => {
+  const collection = await noiseComplaints();
+  const safeLimit = Math.max(1, Math.min(Number(limit) || 50, 200));
+
+  const pipeline = [
+    {
+      $project: {
+        description: { $ifNull: ['$description', 'Unknown'] }
+      }
+    },
+    {
+      $group: {
+        _id: '$description',
+        count: { $sum: 1 }
+      }
+    },
+    { $sort: { count: -1, _id: 1 } },
+    { $limit: safeLimit },
+    {
+      $project: {
+        _id: 0,
+        description: '$_id',
+        count: 1
+      }
+    }
+  ];
+
+  return collection.aggregate(pipeline).toArray();
+};
+
+export const getComplaintsByDescription = async (description, { page = 1, limit = 25 } = {}) => {
+  description = isValidString(description, 'Description');
+  const trimmed = description.trim();
+
+  const collection = await noiseComplaints();
+
+  const safeLimit = Math.max(1, Math.min(Number(limit) || 25, 100));
+  const safePage = Math.max(1, Number(page) || 1);
+  const skip = (safePage - 1) * safeLimit;
+
+  const query = { description: trimmed };
+
+  const [total, docs] = await Promise.all([
+    collection.countDocuments(query),
+    collection
+      .find(query)
+      .sort({ dateSubmitted: -1 })
+      .skip(skip)
+      .limit(safeLimit)
+      .toArray()
+  ]);
+
+  const complaints = docs.map((d) => ({ ...d, _id: d._id.toString() }));
+  const totalPages = Math.max(1, Math.ceil(total / safeLimit));
+
+  return {
+    complaints,
+    page: safePage,
+    limit: safeLimit,
+    total,
+    totalPages,
+    hasPrev: safePage > 1,
+    hasNext: safePage < totalPages
+  };
+};
+
+export const getTimeHeatmap = async () => {
+  const collection = await noiseComplaints();
+
+  const pipeline = [
+    {
+      $addFields: {
+        _ds: {
+          $toDate: '$dateSubmitted'
+        }
+      }
+    },
+    {
+      $project: {
+        _id: 0,
+        dow: {
+          $dayOfWeek: {
+            date: '$_ds',
+            timezone: 'America/New_York'
+          }
+        },
+        hour: {
+          $hour: {
+            date: '$_ds',
+            timezone: 'America/New_York'
+          }
+        }
+      }
+    },
+    {
+      $group: {
+        _id: { dow: '$dow', hour: '$hour' },
+        count: { $sum: 1 }
+      }
+    },
+    {
+      $project: {
+        _id: 0,
+        dow: '$_id.dow',
+        hour: '$_id.hour',
+        count: 1
+      }
+    }
+  ];
+
+  const rows = await collection.aggregate(pipeline).toArray();
+  const grid = Array.from({ length: 7 }, () => Array(24).fill(0));
+
+  let max = 0;
+  let total = 0;
+
+  for (const r of rows) {
+    const dayIndex = (r.dow ?? 1) - 1; // Mongo: 1=Sun → 7=Sat
+    const hour = r.hour ?? 0;
+
+    if (dayIndex >= 0 && dayIndex < 7 && hour >= 0 && hour < 24) {
+      grid[dayIndex][hour] = r.count;
+      total += r.count;
+      if (r.count > max) max = r.count;
+    }
+  }
+
+  return {
+    grid,
+    max,
+    total,
+    days: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+    hours: Array.from({ length: 24 }, (_, i) => i)
+  };
+};

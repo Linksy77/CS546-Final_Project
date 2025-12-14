@@ -22,7 +22,9 @@ app.engine('handlebars', exphbs({
     increment: (val) => Number(val) + 1,
     decrement: (val) => Math.max(1, Number(val) - 1),
     eq: (a, b) => a === b, 
-    intensityPercent: (val) => Number(val) * 10
+    intensityPercent: (val) => Number(val) * 10,
+    ifEquals: (a, b, options) =>
+      String(a) === String(b) ? options.fn(this) : options.inverse(this)
   }
 }));
 app.set('view engine', 'handlebars');

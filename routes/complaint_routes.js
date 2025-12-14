@@ -1,7 +1,13 @@
 import {Router} from 'express';
 import xss from 'xss';
 const router = Router();
-import { getComplaintPage } from '../data/complaints.js';
+import {
+  getComplaintPage,
+  searchComplaints,
+  getTopDescriptions,
+  getComplaintsByDescription,
+  getTimeHeatmap
+} from '../data/complaints.js';
 import { neighborhoods } from '../config/mongoCollections.js';
 import * as userDataFxns from '../data/users.js';
 import * as helpers from '../helpers.js';
@@ -298,5 +304,125 @@ router.post('/complaints/:id/comments', async (req, res) => {
 
 
 })
+
+router.get('/search', async (req, res) => {
+  try {
+    const q = (req.query.q || '').trim();
+    const description = (req.query.description || '').trim();
+    const page = parseInt(req.query.page || '1', 10);
+    const limit = parseInt(req.query.limit || '25', 10);
+
+    const descriptions = await getTopDescriptions(50);
+
+    if (!q && !description) {
+      return res.render('search', {
+        title: 'Search',
+        user: req.session.user || null,
+        q: '',
+        complaints: [],
+        hasResults: false,
+        descriptions,
+        selectedDescription: ''
+      });
+    }
+
+    let result;
+    if (description && !q) {
+      result = await getComplaintsByDescription(description, { page, limit });
+    }
+    else if (q && !description) {
+      result = await searchComplaints(q, { page, limit });
+    }
+    else {
+      const base = await searchComplaints(q, { page, limit });
+      const filtered = base.complaints.filter((c) => (c.description || '').trim() === description);
+      const total = filtered.length;
+      const totalPages = 1;
+
+      result = {
+        complaints: filtered,
+        page: 1,
+        limit: base.limit,
+        total,
+        totalPages,
+        hasPrev: false,
+        hasNext: false
+      };
+    }
+
+    return res.render('search', {
+      title: 'Search',
+      user: req.session.user || null,
+      q,
+      ...result,
+      descriptions,
+      selectedDescription: description,
+      queryLimit: result.limit,
+      hasResults: result.complaints.length > 0
+    });
+  } catch (e) {
+    return res.status(400).render('search', {
+      title: 'Search',
+      user: req.session.user || null,
+      q: req.query.q || '',
+      complaints: [],
+      hasResults: false,
+      error: e?.message || 'Invalid search query.'
+    });
+  }
+});
+
+router.get('/api/search', async (req, res) => {
+  try {
+    const q = req.query.q;
+    const page = parseInt(req.query.page || '1', 10);
+    const limit = parseInt(req.query.limit || '25', 10);
+
+    const result = await searchComplaints(q, { page, limit });
+    return res.json(result);
+  } catch (e) {
+    return res.status(400).json({ error: e?.message || 'Invalid search query.' });
+  }
+});
+
+router.get('/api/descriptions', async (req, res) => {
+  try {
+    const limit = parseInt(req.query.limit || '50', 10);
+    const descriptions = await getTopDescriptions(limit);
+    return res.json({ descriptions });
+  } catch (e) {
+    return res.status(500).json({ error: 'Failed to load descriptions.' });
+  }
+});
+
+router.get('/api/filter', async (req, res) => {
+  try {
+    const description = req.query.description;
+    const page = parseInt(req.query.page || '1', 10);
+    const limit = parseInt(req.query.limit || '25', 10);
+
+    const result = await getComplaintsByDescription(description, { page, limit });
+    return res.json(result);
+  } catch (e) {
+    return res.status(400).json({ error: e?.message || 'Invalid filter.' });
+  }
+});
+
+router.get('/heatmap', async (req, res) => {
+  return res.render('heatmap', {
+    title: 'Heat Map',
+    user: req.session.user || null
+  });
+});
+
+router.get('/api/heatmap-time', async (req, res) => {
+  try {
+    const heatmap = await getTimeHeatmap();
+    return res.json(heatmap);
+  } catch (e) {
+    console.error('Error building heatmap', e);
+    return res.status(500).json({ error: 'Failed to load heatmap.' });
+  }
+});
 
 export default router;
