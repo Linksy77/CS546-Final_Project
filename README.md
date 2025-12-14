@@ -18,7 +18,7 @@ npm i zod mongodb express bcryptjs express-session express-handlebars
 ```
 
 ## Seeding data
-For conviences we've put all of our seed scripts into one easy seed command. However, if you'd rather run each seed one by one those commands will be given below in order as well. 
+For convenience we've put all of our seed scripts into one easy seed command. However, if you'd rather run each seed one by one, those commands will be given, in order, as well. 
 ### Seed all at once command:
 > [!WARNING]
 > One of the seed scripts (import-311-complaints) is pulling and seeding over 750,000 noise complaints (that's just the complaints from 2025) so this script will take ~15 minutes to complete seeding to avoid any kind of rate limiting. It may be worth letting this seed in the background while you complete another task! 
