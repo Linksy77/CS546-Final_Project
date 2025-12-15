@@ -16,16 +16,16 @@
   <nav class="site-nav-bar">
     <div class="nav-container">
       <ul>
-        <a id="homelink" class="nav-link" href="/">Home</a>
-        <a id="neighborhoods" class="nav-link" href="/neighborhoods">Compare</a>
-        <a id="searchlink" class="nav-link" href="/search">Search</a>
-        <a id="heatmaplink" class="nav-link" href="/heatmap">Heat Map</a> 
+        <li><a id="homelink" class="nav-link" href="/">Home</a></li>
+        <li><a id="neighborhoods" class="nav-link" href="/neighborhoods">Compare</a></li>
+        <li><a id="searchlink" class="nav-link" href="/search">Search</a></li>
+        <li><a id="heatmaplink" class="nav-link" href="/heatmap">Heat Map</a></li>
         {{#if user}}
-          <a id="userlink" class="nav-link" href="/userProfile">Your Profile</a>
-          <a id="signout" class="nav-link" href="/signout">Sign Out</a>
+          <li><a id="userlink" class="nav-link" href="/userProfile">Your Profile</a></li>
+          <li><a id="signout" class="nav-link" href="/signout">Sign Out</a></li>
         {{else}}
-          <a id="signuplink" class="nav-link" href="/signup">Sign Up</a>
-          <a id="loginlink" class="nav-link" href="/login">Log In</a>
+          <li><a id="signuplink" class="nav-link" href="/signup">Sign Up</a></li>
+          <li><a id="loginlink" class="nav-link" href="/login">Log In</a></li>
         {{/if}}
       </ul>
     </div>

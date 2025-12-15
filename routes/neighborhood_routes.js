@@ -36,6 +36,7 @@ router
       
       return res.render('neighborhoods/list', {
         user: req.session.user || null,
+        title: "Neighborhoods",
         neighborhoods: byBorough,
         totalCount: allNeighborhoods.length
       });
