@@ -1,48 +1,64 @@
-<section class="heatmap-page">
-  <p class="notice">
-    Visualize NYC noise complaint density by <strong>day of week</strong> and <strong>time of day</strong>.
-  </p>
-  <div class="heatmap-controls" role="group" aria-label="Heat map filters">
-    <div class="control-group">
-      <label for="daySelect">Day of Week</label>
-      <select id="daySelect" aria-label="Filter by day of week">
-        <option value="all" selected>All Days</option>
-        <option value="0">Sunday</option>
-        <option value="1">Monday</option>
-        <option value="2">Tuesday</option>
-        <option value="3">Wednesday</option>
-        <option value="4">Thursday</option>
-        <option value="5">Friday</option>
-        <option value="6">Saturday</option>
-      </select>
-    </div>
-    <div class="control-group">
-      <label for="hourSelect">Time of Day</label>
-      <select id="hourSelect" aria-label="Filter by time of day">
-        <option value="all" selected>All Hours</option>
-        <option value="night">Night (12am–6am)</option>
-        <option value="morning">Morning (6am–12pm)</option>
-        <option value="afternoon">Afternoon (12pm–6pm)</option>
-        <option value="evening">Evening (6pm–12am)</option>
-      </select>
-    </div>
-    <div class="control-group">
-      <button type="button" id="heatmapReset">Reset</button>
-    </div>
-  </div>
-  <div id="heatmapMeta" class="heatmap-meta" aria-live="polite"></div>
-  <div class="heatmap-layout">
-    <div class="heatmap-card">
-      <div id="heatmapContainer" class="heatmap-container" aria-label="Heat map">
-        <div id="heatmapGrid"></div>
-        <p id="heatmapStatus" class="notice">Loading heat map…</p>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>NYC Noise Heat Map</title>
+  </head>
+  <body>
+    <section class="heatmap-page">
+      <p class="notice">
+        Visualize NYC noise complaint density by <strong>day of week</strong> and
+        <strong>time of day</strong>.
+      </p>
+      <div class="heatmap-controls" role="group" aria-label="Heat map filters">
+        <div class="control-group">
+          <label for="daySelect">Day of Week</label>
+          <select id="daySelect" name="day">
+            <option value="all" selected>All Days</option>
+            <option value="0">Sunday</option>
+            <option value="1">Monday</option>
+            <option value="2">Tuesday</option>
+            <option value="3">Wednesday</option>
+            <option value="4">Thursday</option>
+            <option value="5">Friday</option>
+            <option value="6">Saturday</option>
+          </select>
+        </div>
+        <div class="control-group">
+          <label for="hourSelect">Time of Day</label>
+          <select id="hourSelect" name="hourRange">
+            <option value="all" selected>All Hours</option>
+            <option value="night">Night (12am–6am)</option>
+            <option value="morning">Morning (6am–12pm)</option>
+            <option value="afternoon">Afternoon (12pm–6pm)</option>
+            <option value="evening">Evening (6pm–12am)</option>
+          </select>
+        </div>
+        <div class="control-group">
+          <button type="button" id="heatmapReset">Reset</button>
+        </div>
       </div>
-    </div>
-    <aside class="heatmap-legend" aria-label="Heat map legend">
-      <h3>Legend</h3>
-      <div id="heatmapLegend"></div>
-    </aside>
-  </div>
-  <div id="heatmapTooltip" class="heatmap-tooltip" role="tooltip" hidden></div>
-</section>
-<script src="/public/js/heatmap.js"></script>
+      <div id="heatmapMeta" class="heatmap-meta" aria-live="polite"></div>
+      <div class="heatmap-layout">
+        <div class="heatmap-card">
+          <figure id="heatmapContainer" class="heatmap-container">
+            <div id="heatmapGrid"></div>
+            <p id="heatmapStatus" class="notice">Loading heat map…</p>
+          </figure>
+        </div>
+        <aside class="heatmap-legend" aria-label="Heat map legend">
+          <h3>Legend</h3>
+          <div id="heatmapLegend"></div>
+        </aside>
+      </div>
+      <div
+        id="heatmapTooltip"
+        class="heatmap-tooltip"
+        role="tooltip"
+        hidden
+      ></div>
+    </section>
+    <script src="/public/js/heatmap.js"></script>
+  </body>
+</html>
